@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/react'
 import { useSimulateur, ETAPES } from './hooks/useSimulateur'
 import { Stepper } from './components/Stepper'
 import { StepFoyer } from './components/StepFoyer'
@@ -129,6 +130,8 @@ function App() {
           </p>
         </div>
       </footer>
+
+      <Analytics />
     </div>
   )
 }
