@@ -10,14 +10,14 @@ const etapesLabels = [
 export const Stepper = ({ etapeActuelle, enfantEnCours, nombreEnfants }) => {
   return (
     <div className="mb-8">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-center">
         {etapesLabels.map((e, index) => {
           const isActive = etapeActuelle === e.etape
           const isCompleted = etapeActuelle > e.etape
           const isLast = index === etapesLabels.length - 1
 
           return (
-            <div key={e.etape} className="flex items-center flex-1">
+            <div key={e.etape} className="flex items-center">
               <div className="flex flex-col items-center">
                 <div
                   className={`
@@ -41,7 +41,7 @@ export const Stepper = ({ etapeActuelle, enfantEnCours, nombreEnfants }) => {
                 </div>
                 <span
                   className={`
-                    mt-2 text-xs font-medium
+                    mt-2 text-xs font-medium whitespace-nowrap
                     ${isActive || isCompleted ? 'text-pass-plus-600' : 'text-gray-500'}
                   `}
                 >
@@ -51,7 +51,7 @@ export const Stepper = ({ etapeActuelle, enfantEnCours, nombreEnfants }) => {
               {!isLast && (
                 <div
                   className={`
-                    flex-1 h-1 mx-4 rounded
+                    w-12 sm:w-16 md:w-24 h-1 mx-2 sm:mx-3 rounded
                     ${isCompleted ? 'bg-pass-plus-600' : 'bg-gray-200'}
                   `}
                 />
