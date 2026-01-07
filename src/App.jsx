@@ -60,6 +60,7 @@ function App() {
         return (
           <StepResultats
             resultats={resultats}
+            foyer={foyer}
             onReset={reset}
             onPrev={allerEtapePrecedente}
           />

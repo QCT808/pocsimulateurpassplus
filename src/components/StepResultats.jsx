@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+import { track } from '@vercel/analytics'
 import { Button } from './ui/Button'
 import { grouperParCategorie } from '../utils/justificatifs'
 
@@ -188,8 +190,49 @@ const EnfantResultat = ({ resultat }) => {
   )
 }
 
-export const StepResultats = ({ resultats, onReset, onPrev }) => {
+export const StepResultats = ({ resultats, foyer, onReset, onPrev }) => {
   const { enfants, nombreEligibles, totalAideFinanciere, totalImagineR, montantTotal, qfm } = resultats
+
+  // Tracking des simulations terminées
+  useEffect(() => {
+    // Calcul des aides par enfant pour le tracking
+    const aidesParEnfant = enfants.map((r, i) => ({
+      enfant: i + 1,
+      aideFinanciere: r.aides.aideFinanciere.eligible,
+      bonusBourseASE: r.aides.bonusBourseASE.eligible,
+      reductionRestauration: r.aides.reductionRestauration.eligible,
+      tarifRepas: r.aides.reductionRestauration.tarifRepas || null,
+      imagineR: r.aides.remboursementImagineR.eligible,
+      montantImagineR: r.aides.remboursementImagineR.montant || null,
+      donOrdinateur: r.aides.donOrdinateur.eligible
+    }))
+
+    // Détection du navigateur
+    const userAgent = navigator.userAgent
+    let navigateur = 'Autre'
+    if (userAgent.includes('Chrome') && !userAgent.includes('Edg')) navigateur = 'Chrome'
+    else if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) navigateur = 'Safari'
+    else if (userAgent.includes('Firefox')) navigateur = 'Firefox'
+    else if (userAgent.includes('Edg')) navigateur = 'Edge'
+
+    track('simulation_terminee', {
+      // Infos navigateur
+      navigateur,
+      // Infos foyer (sans données personnelles)
+      departement: foyer?.departement || 'non_renseigne',
+      situationFamiliale: foyer?.situationFamiliale || 'non_renseigne',
+      situationParticuliere: foyer?.situationParticuliere || 'non_renseigne',
+      // Résultats globaux
+      nombreEnfants: enfants.length,
+      nombreEligibles,
+      qfm: qfm || 0,
+      totalAideFinanciere,
+      totalImagineR,
+      montantTotal,
+      // Détail par enfant (JSON stringifié)
+      detailEnfants: JSON.stringify(aidesParEnfant)
+    })
+  }, [])
 
   return (
     <div className="space-y-6">
