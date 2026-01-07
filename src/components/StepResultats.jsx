@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { track } from '@vercel/analytics'
+import posthog from 'posthog-js'
 import { Button } from './ui/Button'
 import { grouperParCategorie } from '../utils/justificatifs'
 
@@ -215,7 +215,7 @@ export const StepResultats = ({ resultats, foyer, onReset, onPrev }) => {
     else if (userAgent.includes('Firefox')) navigateur = 'Firefox'
     else if (userAgent.includes('Edg')) navigateur = 'Edge'
 
-    track('simulation_terminee', {
+    posthog.capture('simulation_terminee', {
       // Infos navigateur
       navigateur,
       // Infos foyer (sans données personnelles)
@@ -229,8 +229,8 @@ export const StepResultats = ({ resultats, foyer, onReset, onPrev }) => {
       totalAideFinanciere,
       totalImagineR,
       montantTotal,
-      // Détail par enfant (JSON stringifié)
-      detailEnfants: JSON.stringify(aidesParEnfant)
+      // Détail par enfant
+      detailEnfants: aidesParEnfant
     })
   }, [])
 
