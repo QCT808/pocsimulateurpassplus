@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react'
+import posthog from 'posthog-js'
 import { Select } from './ui/Select'
 import { RadioGroup } from './ui/RadioGroup'
 import { NumberInput } from './ui/NumberInput'
@@ -21,6 +23,16 @@ const situationsParticulieres = [
 ]
 
 export const StepFoyer = ({ foyer, setFoyer, onNext }) => {
+  const hasTrackedStart = useRef(false)
+
+  // Track simulation démarrée (une seule fois)
+  useEffect(() => {
+    if (!hasTrackedStart.current) {
+      posthog.capture('simulation_demarree')
+      hasTrackedStart.current = true
+    }
+  }, [])
+
   const departementOptions = DEPARTEMENTS.map(d => ({
     value: d.code,
     label: `${d.code} - ${d.nom}`
@@ -39,6 +51,14 @@ export const StepFoyer = ({ foyer, setFoyer, onNext }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (isValid) {
+      // Track étape foyer complétée
+      posthog.capture('etape_foyer_completee', {
+        departement: foyer.departement,
+        situationFamiliale: foyer.situationFamiliale,
+        situationParticuliere: foyer.situationParticuliere,
+        revenus: foyer.revenus || null,
+        nombreParts: foyer.nombreParts || null
+      })
       onNext()
     }
   }

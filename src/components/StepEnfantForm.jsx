@@ -1,3 +1,4 @@
+import posthog from 'posthog-js'
 import { RadioGroup } from './ui/RadioGroup'
 import { Select } from './ui/Select'
 import { Checkbox } from './ui/Checkbox'
@@ -107,6 +108,23 @@ export const StepEnfantForm = ({
   const handleSubmit = (e) => {
     e.preventDefault()
     if (isValid) {
+      // Track étape enfant complétée
+      posthog.capture('etape_enfant_completee', {
+        numeroEnfant: numero,
+        nombreEnfantsTotal: nombreEnfants,
+        niveauScolaire: enfant.niveauScolaire,
+        resideChezResponsable: enfant.resideChezResponsable,
+        departementResidence: enfant.departementResidence || null,
+        etablissement: enfant.etablissement || null,
+        estDansCollegeListe,
+        departementScolarisation: enfant.departementScolarisation || null,
+        cantineDansListe: enfant.cantineDansListe,
+        collegeCantine: enfant.collegeCantine || null,
+        estBoursier: enfant.estBoursier,
+        echelonBourse: enfant.echelonBourse || null,
+        estASE: enfant.estASE,
+        souhaiteImagineR: enfant.souhaiteImagineR
+      })
       onNext()
     }
   }

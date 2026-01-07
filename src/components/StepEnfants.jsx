@@ -1,3 +1,4 @@
+import posthog from 'posthog-js'
 import { NumberInput } from './ui/NumberInput'
 import { Button } from './ui/Button'
 
@@ -12,6 +13,9 @@ export const StepEnfants = ({
   const handleSubmit = (e) => {
     e.preventDefault()
     if (isValid) {
+      posthog.capture('etape_nombre_enfants_completee', {
+        nombreEnfants
+      })
       onNext()
     }
   }
