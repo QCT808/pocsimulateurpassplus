@@ -169,8 +169,18 @@ export const calculerReductionRestauration = (enfant, foyerDepartement, qfm, sit
 }
 
 /**
+ * Montants du remboursement Imagine R par échelon de bourse
+ */
+const MONTANTS_IMAGINE_R = {
+  '1': 64,
+  '2': 128,
+  '3': 160
+}
+
+/**
  * 6.4 Remboursement partiel du Pass Imagine R
  * Éligible si : Résident dans le 92 ET boursier ET souhaite utiliser le Pass Imagine R
+ * Montant selon échelon : 1 = 64€, 2 = 128€, 3 = 160€
  */
 export const calculerRemboursementImagineR = (enfant, foyerDepartement) => {
   if (!estCollegien(enfant)) {
@@ -191,9 +201,15 @@ export const calculerRemboursementImagineR = (enfant, foyerDepartement) => {
     return { eligible: false, raison: 'Ne souhaite pas utiliser le Pass Imagine R' }
   }
 
+  // Calcul du montant selon l'échelon de bourse
+  const echelon = enfant.echelonBourse || '1'
+  const montant = MONTANTS_IMAGINE_R[echelon] || MONTANTS_IMAGINE_R['1']
+
   return {
     eligible: true,
-    criteres: ['Résident dans le 92', 'Boursier', 'Utilise le Pass Imagine R']
+    montant,
+    echelon,
+    criteres: ['Résident dans le 92', `Boursier échelon ${echelon}`, 'Utilise le Pass Imagine R']
   }
 }
 
@@ -264,18 +280,26 @@ export const calculerToutesAides = (enfant, foyer, qfm) => {
     donOrdinateur: calculerDonOrdinateur(enfant, departement, qfm, situationParticuliere)
   }
 
-  // Calcul du montant total
-  let montantTotal = 0
+  // Calcul du montant aide financière (Pass+)
+  let montantAideFinanciere = 0
   if (aides.aideFinanciere.eligible) {
-    montantTotal += aides.aideFinanciere.montant
+    montantAideFinanciere += aides.aideFinanciere.montant
   }
   if (aides.bonusBourseASE.eligible) {
-    montantTotal += aides.bonusBourseASE.montant
+    montantAideFinanciere += aides.bonusBourseASE.montant
+  }
+
+  // Calcul du montant Imagine R (séparé)
+  let montantImagineR = 0
+  if (aides.remboursementImagineR.eligible) {
+    montantImagineR = aides.remboursementImagineR.montant
   }
 
   return {
     ...aides,
-    montantTotal,
+    montantAideFinanciere,
+    montantImagineR,
+    montantTotal: montantAideFinanciere + montantImagineR,
     auMoinsUneAide: Object.values(aides).some(a => a.eligible)
   }
 }

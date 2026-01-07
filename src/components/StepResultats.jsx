@@ -115,6 +115,7 @@ const EnfantResultat = ({ resultat }) => {
         <AideCard
           titre="Remboursement Pass Imagine R"
           eligible={aides.remboursementImagineR.eligible}
+          montant={aides.remboursementImagineR.montant}
           criteres={aides.remboursementImagineR.criteres}
           raison={aides.remboursementImagineR.raison}
         />
@@ -188,7 +189,7 @@ const EnfantResultat = ({ resultat }) => {
 }
 
 export const StepResultats = ({ resultats, onReset, onPrev }) => {
-  const { enfants, nombreEligibles, montantTotal, qfm } = resultats
+  const { enfants, nombreEligibles, totalAideFinanciere, totalImagineR, montantTotal, qfm } = resultats
 
   return (
     <div className="space-y-6">
@@ -196,7 +197,7 @@ export const StepResultats = ({ resultats, onReset, onPrev }) => {
       <div className="bg-gradient-to-r from-pass-plus-600 to-pass-plus-700 rounded-xl p-6 text-white">
         <h2 className="text-2xl font-bold mb-4">Résultats de la simulation</h2>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <div className="bg-white/20 rounded-lg p-4">
             <p className="text-sm text-white/80">Enfants simulés</p>
             <p className="text-3xl font-bold">{enfants.length}</p>
@@ -205,10 +206,6 @@ export const StepResultats = ({ resultats, onReset, onPrev }) => {
             <p className="text-sm text-white/80">Enfants éligibles</p>
             <p className="text-3xl font-bold">{nombreEligibles}</p>
           </div>
-          <div className="bg-white/20 rounded-lg p-4">
-            <p className="text-sm text-white/80">Montant total estimé</p>
-            <p className="text-3xl font-bold">{montantTotal} €</p>
-          </div>
           {qfm > 0 && (
             <div className="bg-white/20 rounded-lg p-4">
               <p className="text-sm text-white/80">QFM calculé</p>
@@ -216,6 +213,30 @@ export const StepResultats = ({ resultats, onReset, onPrev }) => {
             </div>
           )}
         </div>
+
+        {/* Détail des montants */}
+        {montantTotal > 0 && (
+          <div className="mt-4 pt-4 border-t border-white/20">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {totalAideFinanciere > 0 && (
+                <div className="bg-white/10 rounded-lg p-4">
+                  <p className="text-sm text-white/80">Aide financière Pass+</p>
+                  <p className="text-2xl font-bold">{totalAideFinanciere} €</p>
+                </div>
+              )}
+              {totalImagineR > 0 && (
+                <div className="bg-white/10 rounded-lg p-4">
+                  <p className="text-sm text-white/80">Remboursement Imagine R</p>
+                  <p className="text-2xl font-bold">{totalImagineR} €</p>
+                </div>
+              )}
+              <div className="bg-white/30 rounded-lg p-4">
+                <p className="text-sm text-white/80">Total estimé</p>
+                <p className="text-2xl font-bold">{montantTotal} €</p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Info */}

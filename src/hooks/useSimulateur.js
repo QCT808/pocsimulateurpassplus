@@ -128,7 +128,9 @@ const reducer = (state, action) => {
 
       // Synthèse globale
       const nombreEligibles = resultatsEnfants.filter(r => r.aides.auMoinsUneAide).length
-      const montantTotal = resultatsEnfants.reduce((sum, r) => sum + r.aides.montantTotal, 0)
+      const totalAideFinanciere = resultatsEnfants.reduce((sum, r) => sum + r.aides.montantAideFinanciere, 0)
+      const totalImagineR = resultatsEnfants.reduce((sum, r) => sum + r.aides.montantImagineR, 0)
+      const montantTotal = totalAideFinanciere + totalImagineR
 
       return {
         ...state,
@@ -136,6 +138,8 @@ const reducer = (state, action) => {
           qfm,
           enfants: resultatsEnfants,
           nombreEligibles,
+          totalAideFinanciere,
+          totalImagineR,
           montantTotal
         }
       }
