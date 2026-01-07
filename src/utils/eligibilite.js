@@ -4,7 +4,7 @@
 
 import { isCollegeDansListe } from '../data/colleges'
 import { isDepartement92 } from '../data/departements'
-import { SEUIL_QFM_RESTAURATION, SEUIL_QFM_ORDINATEUR } from './qfm'
+import { SEUIL_QFM_RESTAURATION, SEUIL_QFM_ORDINATEUR, calculerTarifRestauration } from './qfm'
 
 /**
  * Vérifie si l'enfant est collégien
@@ -153,13 +153,18 @@ export const calculerReductionRestauration = (enfant, foyerDepartement, qfm, sit
     criteres.push('Rattaché à l\'ASE')
   } else if (situationParticuliere !== 'aucune') {
     criteres.push('Situation particulière')
-  } else {
-    criteres.push(`QFM (${qfm}€) < ${SEUIL_QFM_RESTAURATION}€`)
   }
+
+  // Calcul du tarif de restauration
+  // Pour les situations particulières ou ASE, on applique le tarif plancher
+  const qfmPourTarif = (situationParticuliere !== 'aucune' || enfant.estASE) ? 0 : qfm
+  const tarifRepas = calculerTarifRestauration(qfmPourTarif)
 
   return {
     eligible: true,
-    criteres
+    criteres,
+    tarifRepas,
+    tarifRepasFormate: tarifRepas.toFixed(2).replace('.', ',') + ' €'
   }
 }
 

@@ -1,7 +1,7 @@
 import { Button } from './ui/Button'
 import { grouperParCategorie } from '../utils/justificatifs'
 
-const AideCard = ({ titre, eligible, montant, criteres, raison }) => {
+const AideCard = ({ titre, eligible, montant, criteres, raison, tarifRepas }) => {
   return (
     <div
       className={`
@@ -22,7 +22,12 @@ const AideCard = ({ titre, eligible, montant, criteres, raison }) => {
                   {montant} €
                 </p>
               )}
-              {!montant && (
+              {tarifRepas && (
+                <p className="text-2xl font-bold text-green-600 mt-1">
+                  {tarifRepas} <span className="text-base font-normal">/ repas</span>
+                </p>
+              )}
+              {!montant && !tarifRepas && (
                 <p className="text-green-600 font-medium mt-1">Éligible</p>
               )}
             </>
@@ -101,10 +106,11 @@ const EnfantResultat = ({ resultat }) => {
           raison={aides.bonusBourseASE.raison}
         />
         <AideCard
-          titre="Réduction restauration scolaire"
+          titre="Tarif restauration scolaire"
           eligible={aides.reductionRestauration.eligible}
           criteres={aides.reductionRestauration.criteres}
           raison={aides.reductionRestauration.raison}
+          tarifRepas={aides.reductionRestauration.tarifRepasFormate}
         />
         <AideCard
           titre="Remboursement Pass Imagine R"
