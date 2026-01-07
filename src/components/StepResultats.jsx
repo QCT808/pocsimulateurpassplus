@@ -83,7 +83,7 @@ const EnfantResultat = ({ resultat }) => {
         </h3>
         {aides.auMoinsUneAide ? (
           <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">
-            Éligible - {aides.montantTotal > 0 ? `${aides.montantTotal} €` : 'Aides disponibles'}
+            Éligible
           </span>
         ) : (
           <span className="px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-sm font-medium">
